@@ -48,7 +48,7 @@ CheckCtrlCount() {
 LLDControllers() {
     ctrl_count=$(GetCtrlCount)
     ctrl_json=""
-    
+
     for ctrl_id in $(seq 0 $((${ctrl_count} - 1))); do
         ctrl_id=$(echo ${ctrl_id} | tr -dc '[:print:]')
         ctrl_model="-" #$($CLI -AdpAllInfo -a${ctrl_id} -NoLog | grep -i "Product Name" | cut -f2 -d":" | sed -e 's/^\s*//')
@@ -89,7 +89,7 @@ LLDPhysicalDrives() {
             done
         done
     done
-    
+
     echo "{\"data\":[$(echo ${pd_json} | sed -e 's/,$//')]}"
 }
 
@@ -118,7 +118,7 @@ GetControllerStatus() {
     ctrl_id=$1
     ctrl_part=$2
     value=""
-    
+
     case ${ctrl_part} in
 #        "main")
 #            value=$()
@@ -130,7 +130,7 @@ GetControllerStatus() {
             value=$($CLI -AdpBbuCmd -a${ctrl_id} -NoLog | grep -i "Battery State:" | cut -f2 -d":" | sed -e 's/^\s*//')
         ;;
     esac
-    
+
     echo ${value}
 }
 
@@ -140,6 +140,19 @@ GetPhysicalDriveStatus() {
     pd_id=$2
     ed_id=$3
     response=$($CLI -PDInfo -PhysDrv[${ed_id}:${pd_id}] -a${ctrl_id} -NoLog | grep -i "Firmware state:" | cut -f2 -d":" | cut -f1 -d"," | sed -e 's/^\s*//')
+
+    if [ -n ${response} ]; then
+        echo ${response}
+    else
+        echo "Data not found"
+    fi
+}
+
+GetPhysicalDriveTemp() {
+    ctrl_id=$1
+    pd_id=$2
+    ed_id=$3
+    response=$($CLI -PDInfo -PhysDrv[${ed_id}:${pd_id}] -a${ctrl_id} -NoLog | grep -i "Drive Temperature" | cut -f2 -d":" | cut -c1-2 | sed -e 's/^\s*//')
 
     if [ -n ${response} ]; then
         echo ${response}
@@ -189,6 +202,9 @@ case ${action} in
             ;;
             "ld")
                 GetLogicalDriveStatus $3 $4
+            ;;
+            "tmp")
+                GetPhysicalDriveTemp $3 $4 $5
             ;;
         esac
     ;;
