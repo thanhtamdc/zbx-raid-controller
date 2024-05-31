@@ -1,17 +1,5 @@
 #!/bin/bash
 #
-#    .VERSION
-#    0.2
-#
-#    .DESCRIPTION
-#    Author: Nikitin Maksim
-#    Github: https://github.com/nikimaxim/zbx-raid-controller.git
-#    Note: Zabbix lld for Controller RAID
-#
-#    .TESTING
-#    OS: CentOS 7 x64
-#    Controller RAID: Intel Integrated RAID Module RMS25CB080, Intel RAID Controller RS2BL040, LSI MegaRAID SAS 9240-4i
-#
 
 CLI='/opt/MegaRAID/MegaCli/MegaCli64'
 PATH_CTRL_COUNT='/tmp/ctrl_count'
